@@ -20,6 +20,7 @@ public class Server {
         messageConsumer.subscribeTopics(topic);
         messageConsumer.consumeMessage();
         MessageProducer producer=new MessageProducer();
+        System.out.println("in execution");
         try {
             ServerSocket serverSocket=new ServerSocket(ServerConfig.PORT);
             while(true){
@@ -42,6 +43,7 @@ public class Server {
                 message.setTopic(topic);
                 message.setValue(dataModel);
                 Response response=producer.sendMessageSync(message);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
