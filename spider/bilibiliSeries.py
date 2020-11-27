@@ -5,22 +5,9 @@ from bilibili_api import Verify
 from customizedAPI import get_comments, get_danmaku
 import bilibili_api
 import json
-import socket
 import datetime
 import time
-SERVER_IP = 'localhost'
-PORT=8081
 
-
-# 将数据传给kafka的socket
-def socket_client(data):
-    # 创建tcp套接字
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # 链接服务器
-    client_socket.connect((SERVER_IP, PORT))
-    print(data)
-    client_socket.send(data.encode("UTF-8"))
-    client_socket.close()
 
 
 def getDetails(fanDic):#传入番剧的字典，内包含media_id,season_id信息
@@ -58,8 +45,7 @@ if __name__ == "__main__":
                 testComments = get_comments(oid=test, type_="video")
                 kafkaMap['comment'] += testComments #添加单集评论
 
-            # print(kafkaMap)
-            # socket_client(str(kafkaMap))
+            print(kafkaMap)
     #json_str=json.dumps(result,ensure_ascii=False,indent=4)
     #with open("data.json",'w') as json_file:
     #    json_file.write(json_str)
