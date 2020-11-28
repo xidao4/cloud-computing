@@ -80,11 +80,14 @@ def get_comments(oid: int, type_: str, order: str = "time",
         for comment in resp["replies"]:
             dict = {'ctime': comment['ctime'], 'content': comment['content']['message']}
             replies.append(dict)
+
         # replies += resp["replies"]
+        print("已爬评论数： " + str(len(replies)))
         if callable(callback):
             callback(resp["replies"])
         page += 1
-        time.sleep(5) #等待五秒再发起下一次api请求
+        time.sleep(1) #等待五秒再发起下一次api请求
+
     return replies[:limit]
 
 
@@ -142,7 +145,8 @@ def get_danmaku(bvid: str = None, aid: int = None, page: int = 0,
                 is_sub=is_sub,
                 text=text
             )
-            py_danmaku.append(dm)
+            danmaku = {'send_time': str(dm.send_time), 'content': dm.text}
+            py_danmaku.append(danmaku)
         return py_danmaku
     else:
         raise bilibili_api.exceptions.NetworkException(req.status_code)
