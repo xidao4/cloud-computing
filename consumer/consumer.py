@@ -17,8 +17,8 @@ if __name__ == "__main__":
     sc = SparkContext(appName="PythonStreamingKafkaTest")
     ssc = StreamingContext(sc, 1)
  
-    zkQuorum="localhost:2181"
-    topic="test"
+    zkQuorum = "localhost:2181"
+    topic = "test"
     kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: 1})
     
     kvs.pprint()

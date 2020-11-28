@@ -53,7 +53,7 @@ def get_comments_raw(oid: int, type_: str, order: str = "time", pn: int = 1, ver
 
 
 def get_comments(oid: int, type_: str, order: str = "time",
-                 limit: int = 1919810, callback=None, verify: bilibili_api.utils.Verify = None):
+                 limit: int = 1919810, callback=None, verify: bilibili_api.utils.Verify = None, timeLimit = 0):
     """
     通用循环获取评论
     :param type_:
@@ -79,8 +79,10 @@ def get_comments(oid: int, type_: str, order: str = "time",
         count += len(resp["replies"])
         for comment in resp["replies"]:
             dict = {'ctime': comment['ctime'], 'content': comment['content']['message']}
-            replies.append(dict)
-
+            if dict['ctime'] > timeLimit:
+                replies.append(dict)
+            else:
+                return replies[:limit]
         # replies += resp["replies"]
         print("已爬评论数： " + str(len(replies)))
         if callable(callback):

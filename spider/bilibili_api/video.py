@@ -48,7 +48,7 @@ def get_video_info(bvid: str = None, aid: int = None, is_simple: bool = False, v
 
 
 def get_danmaku(bvid: str = None, aid: int = None, page: int = 0,
-                verify: utils.Verify = None, date: datetime.date = None):
+                verify: utils.Verify = None, date: datetime.date = None, timeLimit = 0):
     """
     获取弹幕
     :param aid:
@@ -101,8 +101,13 @@ def get_danmaku(bvid: str = None, aid: int = None, page: int = 0,
                 is_sub=is_sub,
                 text=text
             )
-            danmaku = {'send_time': str(dm.send_time), 'content': dm.text, 'dm_time': str(dm.dm_time)}
-            py_danmaku.append(danmaku)
+            timeArray = time.strptime(str(dm.send_time), "%Y-%m-%d %H:%M:%S")
+            timeStamp = int(time.mktime(timeArray))
+            if timeStamp > timeLimit:
+                danmaku = {'send_time': str(dm.send_time), 'content': dm.text, 'dm_time': str(dm.dm_time)}
+                py_danmaku.append(danmaku)
+            else:
+                return py_danmaku
         return py_danmaku
     else:
         raise exceptions.NetworkException(req.status_code)
