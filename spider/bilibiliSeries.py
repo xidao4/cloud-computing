@@ -5,22 +5,9 @@ from bilibili_api import Verify
 from customizedAPI import get_comments, get_danmaku
 import bilibili_api
 import json
-import socket
 import datetime
 import time
-SERVER_IP = 'localhost'
-PORT=8081
 
-
-# 将数据传给kafka的socket
-def socket_client(data):
-    # 创建tcp套接字
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # 链接服务器
-    client_socket.connect((SERVER_IP, PORT))
-    print(data)
-    client_socket.send(data.encode("UTF-8"))
-    client_socket.close()
 
 
 def getDetails(fanDic):#传入番剧的字典，内包含media_id,season_id信息
@@ -67,21 +54,23 @@ if __name__ == "__main__":
             with open("BangumiDanmaku.json", 'w', encoding='utf-8') as json_Danmakufile:
                 json_Danmakufile.write(json_BangumiDanmaku)
 
-    # LOLBvidLists = ["BV1my4y1k7m1", "BV1ri4y1E7Zg", "BV1B54y1k7cL", "BV1Yh41197Ho", "BV1dT4y1c76Q", "BV1U5411j77H", "BV1y54y1k7tz",
-    #            "BV15a4y1L7zo", "BV1KK411A7b1", "BV1ft4y1v7TF", "BV1tV41127ne", "BV15p4y1k7Fg", "BV1bK4y177v4", "BV15r4y1w7T5",
-    #            "BV1dv411k7xd", "BV1vz4y1C7cv", "BV1QK4y177Lq", "BV1iK411A733", "BV1WK4y1E7ex", "BV1nV41117b3",
-    #            "BV1Pp4y1z7Qc"
-    #            ]
-    # # LOLBvid = "BV1D54y1z7bv"
-    # LOLComments = []
-    # for Bvid in LOLBvidLists:
-    #     LOLAvid = bvid2aid(Bvid)
-    #     LOLComments += get_comments(oid=LOLAvid, type_="video")
-    # json_Comment = json.dumps(LOLComments, ensure_ascii=False, indent=4)
-    # with open("LOLcomment.json", 'w', encoding='utf-8') as json_file:
-    #     json_file.write(json_Comment)
+
+    LOLBvidLists = ["BV1my4y1k7m1", "BV1ri4y1E7Zg", "BV1B54y1k7cL", "BV1Yh41197Ho", "BV1dT4y1c76Q", "BV1U5411j77H", "BV1y54y1k7tz",
+                   "BV15a4y1L7zo", "BV1KK411A7b1", "BV1ft4y1v7TF", "BV1tV41127ne", "BV15p4y1k7Fg", "BV1bK4y177v4", "BV15r4y1w7T5",
+                   "BV1dv411k7xd", "BV1vz4y1C7cv", "BV1QK4y177Lq", "BV1iK411A733", "BV1WK4y1E7ex", "BV1nV41117b3",
+                   "BV1Pp4y1z7Qc"
+                   ]
+    # LOLBvid = "BV1D54y1z7bv"
+    LOLComments = []
+    for Bvid in LOLBvidLists:
+        LOLAvid = bvid2aid(Bvid)
+        LOLComments += get_comments(oid=LOLAvid, type_="video")
+    json_Comment = json.dumps(LOLComments, ensure_ascii=False, indent=4)
+    with open("LOLcomment.json", 'w', encoding='utf-8') as json_file:
+        json_file.write(json_Comment)
     # print(kafkaMap)
-            # socket_client(str(kafkaMap))
+    # socket_client(str(kafkaMap))
+
     #json_str=json.dumps(result,ensure_ascii=False,indent=4)
     #with open("data.json",'w') as json_file:
     #    json_file.write(json_str)
