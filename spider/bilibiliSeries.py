@@ -4,7 +4,7 @@ from bilibili_api import bvid2aid
 from bilibili_api import Verify
 from spider.customizedAPI import get_comments, get_danmaku
 from spider.textDealWith import get_all_statis
-import bilibili_api
+from spider import bilibili_api
 import json
 import datetime
 import time
@@ -15,20 +15,20 @@ def getDetails(fanDic):#传入番剧的字典，内包含media_id,season_id信�
     return  0
 
 
-def getTodayDanmaku(season_id = 34430, timeLimit = 0):
+def getTodayDanmaku(seasonId = 34430, timeLimit = 0):
     verify = Verify(sessdata="c9f59cdb%2C1609146929%2C7963a*71", csrf="b6ce9e789575330a9308fad04b56377a")
     bg = bangumi.get_collective_info(seasonId)
     res = []
     for i in range(0, len(bg["episodes"])):
         bgAid = bvid2aid(bg["episodes"][i]["bvid"])
-        Danmaku = bilibili_api.video.get_danmaku(aid=bgAid, verify=verify,timeLimit=timeLimit)
+        Danmaku = bilibili_api.video.get_danmaku(aid=bgAid, verify=verify, timeLimit=timeLimit)
         res += Danmaku  # 添加弹幕
         print("已爬弹幕数： " + str(len(res)))
         time.sleep(1)
     return res
 
 
-def getAllComments(season_id = 34430, timeLimit = 0):
+def getAllComments(seasonId = 34430, timeLimit = 0):
     bg = bangumi.get_collective_info(seasonId)
     res = []
     for i in range(0, len(bg["episodes"])):

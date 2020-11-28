@@ -1,4 +1,4 @@
-import bilibili_api
+from spider import bilibili_api
 import time
 import datetime
 import requests
