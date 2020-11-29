@@ -24,13 +24,16 @@ bin/kafka-server-start.sh config/server.properties
 
 再开一个terminal
 
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bangumi
 
 可以关闭
 
 #### 4.
 
 项目位置 ~/spark/mycode/consumer和/producer
+
+/usr/bin/python /home/cc/Desktop/cloud-computing-dev/producer/producer.py
+
 
 打开VSCode，File>OpenFolder 选择consumer文件夹（左下角可看到解释器版本为3.5.2）
 
