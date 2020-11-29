@@ -9,25 +9,26 @@ from spider.customizedAPI import get_comments
 from spider.bilibiliSeries import getTodayDanmaku
 from spider.bilibiliSeries import getAllComments
 from spider.textDealWith import get_all_statis
-from timeUtils import timestamp2date,formatDate,date2timestamp
+from producer.timeUtils import timestamp2date, formatDate,date2timestamp
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'], value_serializer=lambda m: json.dumps(m).encode('ascii'))
 while True:
     timestamp = int(time.time())
-    with open("/home/cc/Desktop/cloud-computing-dev/producer/timestampRecord.txt", 'r') as f:
+    with open("Path of timestampRecord", 'r') as f:
         lastTimestamp = int(f.readline())
-    #距离上一次执行程序已过两分钟
+    #距离上一次执行程序已过两分钟,重启爬虫程序更新数据
     if timestamp - lastTimestamp >= 120:
-        with open("/home/cc/Desktop/cloud-computing-dev/producer/timestampRecord.txt", 'w') as timestampFile:
+        with open("Path of timestampRecord", 'w') as timestampFile:
             timestampFile.write(str(timestamp))
-        comment = getAllComments(timeLimit=lastTimestamp)
-        danmaku = getTodayDanmaku(timeLimit=lastTimestamp)
-        #Todo set comment and danmaku data format like {'content': str, 'date':%Y-%M-%D}
+        comment = getAllComments(timeLimit=lastTimestamp) #获取评论数据
+        danmaku = getTodayDanmaku(timeLimit=lastTimestamp) #获取弹幕数据
+
+        #循环发送弹幕数据和评论数据
         for i in range(0, len(comment)):
-            ack=producer.send('test', {'comment':comment[i]['content'], 'date': timestamp2date(comment[i]['ctime'])})
-            metadata=ack.get()
+            ack = producer.send('test', {'comment': comment[i]['content'], 'date': timestamp2date(comment[i]['ctime'])})
+            metadata = ack.get()
             print(metadata.topic, metadata.partition)
         for i in range(0, len(danmaku)):
-            ack = producer.send('test', {'comment':danmaku[i]['content'], 'date': formatDate(danmaku[i]['send_time'])})
+            ack = producer.send('test', {'comment': danmaku[i]['content'], 'date': formatDate(danmaku[i]['send_time'])})
             metadata = ack.get()
             print(metadata.topic, metadata.partition)
 

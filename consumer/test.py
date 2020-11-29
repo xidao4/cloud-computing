@@ -10,6 +10,7 @@ def get_names(path):  # 读取txt文件获取角色名字
             name.append(line.split(" "))
     return name
 
+
 if __name__ == "__main__":
     source=[('{number:A,date:2012-01-14}', 8), ('{number:L,date:2012-01-14}', 12), ('{number:E,date:2012-01-14}', 8)]
     csvFile = open(csv_out_path, "a+")  # 创建csv文件

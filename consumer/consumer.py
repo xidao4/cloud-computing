@@ -3,7 +3,7 @@
 
 from __future__ import print_function
  
-import sys
+
  
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
@@ -23,22 +23,21 @@ def get_names(path):  # 读取txt文件获取角色名字
             name.append(line.split(" "))
     return name
 
- #zhongwenluanmajiejue
+
+# 传入consumer的消息中文会显示为unicode编码，需要转化为utf-8编码才能正常显示
 def decode(k):
     
      # strs=k['comment']
    #  strs.encode('utf-8').decode('unicode_escape')
      # k['comment']=strs+2
-    # print("debug")
      temp_dic=eval(k)
      string=temp_dic['comment']
-     string.encode('utf-8').decode('unicode_escape')
+     string.encode('utf-8').decode('unicode_escape') #转码
      temp_dic['comment']=string
-     # print(temp_dic['date'])
-     # print(temp_dic['comment'])
      return temp_dic
 
-def Myprint(rdd):
+
+def writeRDD(rdd):
      csvFile = open(csv_out_path, "a+")  # 创建csv文件
      writer = csv.writer(csvFile)  # 创建写的对象
      source=rdd.collect()
@@ -59,7 +58,7 @@ def Myprint(rdd):
 
      # print("写进csv完成")
      print(rdd.collect())
-     current_contents=[['名字','频数']]
+     current_contents=[['名字', '频数']]
      for k in current_popular:
           temp=[]
           temp.append(k['name'])
@@ -75,7 +74,6 @@ def Myprint(rdd):
      
 
 def cut(rd):
-     # print("cut")
      comm=rd['comment']
      counts=[]
      for i in names:
@@ -98,16 +96,10 @@ def cut(rd):
 
 
 if __name__ == "__main__":
-     # if len(sys.argv) != 3:
-     #     print("Usage: kafka_wordcount.py <zk> <topic>", file=sys.stderr)
-     #     exit(-1)
-
-
      names=get_names(name_path)
-     print(names)
      for i in names:
           temp_name=i[0]
-          temp_dict={'name':temp_name,'popular':0}
+          temp_dict={'name': temp_name, 'popular': 0}
           current_popular.append(temp_dict)
 
      
@@ -116,19 +108,18 @@ if __name__ == "__main__":
      
      zkQuorum = "localhost:2181"
      topic = "test"
-     print("qq")
-     kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic:1})
+
+     kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic:1}) #kafka为来源的Dstream构造
     
-     temp_kvs= kvs.map(lambda x: x[1])
-     divided_kvs=temp_kvs.map(decode)
-     sec_kvs=divided_kvs.flatMap(cut)
-     thir_kvs=sec_kvs.map(lambda word: (word,1))
-     four_kvs=thir_kvs.reduceByKey(lambda a, b: a+b)
-     four_kvs.foreachRDD(lambda x: Myprint(x))
+     temp_kvs= kvs.map(lambda x: x[1]) #用kafka producer 发送的消息内容重新构造Dstream
+     divided_kvs=temp_kvs.map(decode) #kafka_producer 发送的中文内容在consumer处接受到时为unicode编码，需要转换为utf8编码
+     sec_kvs=divided_kvs.flatMap(cut) #使用cut函数对评论进行解析拆分，rdd重构为一个由角色对应编号和弹幕/评论发送日期组成的字符串
+     thir_kvs=sec_kvs.map(lambda word: (word, 1)) #将rdd构造为一个键值对，为reduceByKey做词频统计做准备
+     four_kvs=thir_kvs.reduceByKey(lambda a, b: a+b) #将拥有相同键的rdd合并，做词频统计
+     four_kvs.foreachRDD(lambda x: writeRDD(x)) #将统计结果写入文件
      
     
 
-     #sec_kvs.foreachRDD(lambda x: Myprint(x))
 
      # kvs.pprint()
      print("deg")
