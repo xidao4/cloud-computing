@@ -1,0 +1,45 @@
+<script>
+    function load(name) {
+        let xhr = new XMLHttpRequest(),
+            okStatus = document.location.protocol === "file:" ? 0 : 200;
+        xhr.open('GET', name, false);
+        xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+        xhr.send(null);
+        return xhr.status === okStatus ? xhr.responseText : null;
+    }
+    //读取文件构造数组
+    let text = load('data.txt');
+    var res=JSON.parse(text.replace(/\s/g,"").replace(/\'/g,'"'));
+
+    // 构造options
+    var options = eval({
+        "list": res[Math.floor((Math.random()*res.length))],
+        "gridSize": 16, // size of the grid in pixels
+        "weightFactor": 10, // number to multiply for size of each word in the list
+        "fontWeight": 'normal', // 'normal', 'bold' or a callback
+        "fontFamily": 'Times, serif', // font to use
+        "color": 'random-light', // 'random-dark' or 'random-light'
+        "backgroundColor": '#333', // the color of canvas
+        "rotateRatio": 1 // probability for the word to rotate. 1 means always rotate
+    });
+    var canvas = document.getElementById('canvas');
+    WordCloud(canvas, options);
+
+    //设置定时器
+    setInterval(function(){
+        var options = eval({
+            "list": res[Math.floor((Math.random()*res.length))],
+            "gridSize": 16, // size of the grid in pixels
+            "weightFactor": 10, // number to multiply for size of each word in the list
+            "fontWeight": 'normal', // 'normal', 'bold' or a callback
+            "fontFamily": 'Times, serif', // font to use
+            "color": 'random-light', // 'random-dark' or 'random-light'
+            "backgroundColor": '#333', // the color of canvas
+            "rotateRatio": 1 // probability for the word to rotate. 1 means always rotate
+        });
+        WordCloud(canvas, options);
+    }, 2000)
+
+
+
+</script>

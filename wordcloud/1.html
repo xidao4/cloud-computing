@@ -1,0 +1,70 @@
+<script>
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <!--引入Jquery和wordcloud-->
+        <script src="jquery.js"></script>
+<script src="wordcloud2.js"></script>
+</head>
+<body>
+<div id="canvas-container" align="center">
+    <!--定义一个cavans容器作为画布显示-->
+    <canvas id="canvas" width="600px" height="700px"></canvas>
+</div>
+
+<script>
+    function load(name) {
+        let xhr = new XMLHttpRequest(),
+            okStatus = document.location.protocol === "file:" ? 0 : 200;
+        xhr.open('GET', name, false);
+        xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+        xhr.send(null);
+        return xhr.status === okStatus ? xhr.responseText : null;
+    }
+    //读取文件构造数组
+    function loaddata() {
+        let text = load('data.txt');
+        console.log(text)
+        var res = JSON.parse(text.replace(/\s/g, "").replace(/\'/g, '"'));
+        return res
+        console.log(res)
+    }
+
+    var res=loaddata()
+    // 构造options
+    function getoptions() {
+
+
+    var options = eval({
+        "list": res=loaddata(),
+        "gridSize": 16, // size of the grid in pixels
+        "weightFactor": 10, // number to multiply for size of each word in the list
+        "fontWeight": 'normal', // 'normal', 'bold' or a callback
+        "fontFamily": 'Times, serif', // font to use
+        "color": 'random-light', // 'random-dark' or 'random-light'
+        "backgroundColor": '#333', // the color of canvas
+        "rotateRatio": 1 ,// probability for the word to rotate. 1 means always rotate
+        "shape": 'circle'
+    });
+    return options}
+    var canvas = document.getElementById('canvas');
+    WordCloud(canvas, getoptions());
+
+    //设置定时器
+    setInterval(function(){
+        loaddata();
+         WordCloud(canvas, getoptions());
+
+    }, 1000)
+
+
+
+</script>
+
+
+</body>
+</html>
+</script>
+

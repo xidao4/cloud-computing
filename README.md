@@ -24,7 +24,7 @@ bin/kafka-server-start.sh config/server.properties
 
 再开一个terminal
 
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bangumi
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
 
 可以关闭
 
@@ -39,9 +39,10 @@ bin/kafka-server-start.sh config/server.properties
 
 再打开一个VScode，打开producer文件夹 （左下角解释器版本3.8.1）
 
-先跑consumer.py，
+先跑consumer.py，consumer.py需要在consumer目录下打开控制台，再运行consumer.py文件
+/usr/bin/python3 /home/xidao/cloud-computing/consumer/consumer.py
 其中kvs = KafkaUtils.createStream得到spark streaming流，kvs.pprint()直接打印监听到的数据
 
-再跑producer.py,
+再跑producer.py, producer.py需要在cloud-computing即项目根目录下打开控制台，再运行producer.py文件/usr/bin/python /home/xidao/cloud-computing/producer/producer.py
 把for循环替换为爬虫代码，用KafkaProducer.send到本地Kafka环境的broker服务器上。
 

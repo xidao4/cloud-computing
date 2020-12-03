@@ -1,7 +1,7 @@
 ﻿const config = {
   // 数据源的编码方式。
 
-  encoding: "GBK",
+  encoding: "utf-8",
 
   // 每个时间节点最多显示的条目数。
   max_number: 20,

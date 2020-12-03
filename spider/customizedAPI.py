@@ -52,7 +52,7 @@ def get_comments_raw(oid: int, type_: str, order: str = "time", pn: int = 1, ver
     return resp
 
 
-def get_comments(oid: int, type_: str, order: str = "time",
+def get_comments(episode: int, oid: int, type_: str, order: str = "time",
                  limit: int = 1919810, callback=None, verify: bilibili_api.utils.Verify = None, timeLimit = 0):
     """
     通用循环获取评论
@@ -84,11 +84,11 @@ def get_comments(oid: int, type_: str, order: str = "time",
             else:
                 return replies[:limit]
         # replies += resp["replies"]
-        print("已爬评论数： " + str(len(replies)))
+        print("第" + str(episode) + "集" + "已爬评论数： " + str(len(replies)))
         if callable(callback):
             callback(resp["replies"])
         page += 1
-        time.sleep(1) #等待五秒再发起下一次api请求
+        time.sleep(1) #等待1秒再发起下一次api请求
 
     return replies[:limit]
 

@@ -9,7 +9,7 @@ from spider.customizedAPI import get_comments
 from spider.bilibiliSeries import getTodayDanmaku
 from spider.bilibiliSeries import getAllComments
 from spider.textDealWith import get_all_statis
-from producer.timeUtils import timestamp2date, formatDate,date2timestamp
+from timeUtils import timestamp2date, formatDate,date2timestamp
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'], value_serializer=lambda m: json.dumps(m).encode('ascii'))
 while True:
     timestamp = int(time.time())
@@ -17,12 +17,13 @@ while True:
     #with open("timestampRecord", 'r') as f:
     #with open("C:\\Users\\12736\\Desktop\\学习\\云计算\\groupProject\\cloud-computing\\producer\\timestampRecord", 'r') as f:
 
-    with open("Path of timestampRecord", 'r') as f:
+    # with open("/home/xidao/", 'r') as f:
+    with open("producer/timestampRecord", 'r') as f:
 
         lastTimestamp = int(f.readline())
     #距离上一次执行程序已过两分钟,重启爬虫程序更新数据
     if timestamp - lastTimestamp >= 120:
-        with open("Path of timestampRecord", 'w') as timestampFile:
+        with open("producer/timestampRecord", 'w') as timestampFile:
             timestampFile.write(str(timestamp))
         comment = getAllComments(timeLimit=lastTimestamp) #获取评论数据
         danmaku = getTodayDanmaku(timeLimit=lastTimestamp) #获取弹幕数据

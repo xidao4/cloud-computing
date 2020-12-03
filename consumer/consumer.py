@@ -10,6 +10,7 @@ from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 import csv
 
+time_now='2020-11-20'
 name_path='./names.txt'
 csv_out_path='./statis.csv'
 current_out_path='./current.csv'
@@ -38,6 +39,7 @@ def decode(k):
 
 
 def writeRDD(rdd):
+     global time_now
      csvFile = open(csv_out_path, "a+")  # 创建csv文件
      writer = csv.writer(csvFile)  # 创建写的对象
      source=rdd.collect()
@@ -46,23 +48,28 @@ def writeRDD(rdd):
           line=[]
           temp_str=i[0]
           line.append(names[ord(temp_str[8])-65][0])
-          line.append(temp_str[15:25])
+          line.append('Chinese')
           line.append(i[1])
+          line.append(temp_str[15:25])
+          time_now=line[3]
           contents.append(line)
      for i in contents:
         writer.writerow(i)
         for j in current_popular:
              if j['name']== i[0]:
+               #    print("HHHHHHHHHHHHHHHHHHHHHHHH",type(j['popular'])," and ", type(i[2]))
                   j['popular']+=i[2]
      csvFile.close()
 
      # print("写进csv完成")
      print(rdd.collect())
-     current_contents=[['名字', '频数']]
+     current_contents=[['name', 'type','value','date']]
      for k in current_popular:
           temp=[]
           temp.append(k['name'])
+          temp.append('Chinese')
           temp.append(k['popular'])
+          temp.append(time_now)
           current_contents.append(temp)
      
      csvFile = open(current_out_path, "w")  # 创建csv文件
@@ -97,11 +104,22 @@ def cut(rd):
 
 if __name__ == "__main__":
      names=get_names(name_path)
+
+     # f = open('current.csv','r')
+     # reader = csv.reader(f)
+     # rows  = [row for row in reader]
+     # checkpt=[]
+     # for row in rows:
+     #      checkpt.append(row[2])
+     #      # print("--------------",type(row))
+     #      # print(row)
+     # index = 1
      for i in names:
           temp_name=i[0]
-          temp_dict={'name': temp_name, 'popular': 0}
+          temp_dict={'name': temp_name, 'popular': 0} #str(checkpt[index])
+          # index += 1
           current_popular.append(temp_dict)
-
+     
      
      sc = SparkContext(appName="PythonStreamingKafkaTest")
      ssc = StreamingContext(sc, 1)

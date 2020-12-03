@@ -33,8 +33,7 @@ def getAllComments(seasonId = 34430, timeLimit = 0):
     res = []
     for i in range(0, len(bg["episodes"])):
         bgAid = bvid2aid(bg["episodes"][i]["bvid"])
-        res += get_comments(oid=bgAid, type_="video", timeLimit=timeLimit)  # 添加评论
-        print("已爬评论数： " + str(len(res)))
+        res += get_comments(episode=i+1,oid=bgAid, type_="video", timeLimit=timeLimit)  # 添加评论
         time.sleep(1)
     return res
 
